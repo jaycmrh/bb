@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>video streaming</title>
+</head>
+
+<style>
+	body,
+	html {
+		margin: 0;
+		padding: 0;
+	}
+
+	h1,
+	p {
+		font-size: 13px;
+	}
+
+	#videoPlayer {
+		width: 100%;
+	}
+
+	#videoContainer {
+		position: relative;
+	}
+
+	#progressBar {
+		position: absolute;
+		left: 0;
+		bottom: 10px;
+		height: 10px;
+		width: 0;
+		background-color: red;
+	}
+</style>
+
+<body>
+	<h1>node.js video streaming + ultra-simple custom video player in pure js</h1>
+	<p>
+		made by patmaz
+		<a href="https://codebooyah.com" target="_blank" rel="noopener noreferrer">
+			codebooyah.com
+		</a>
+	</p>
+	<div id="videoContainer">
+		<video id="videoPlayer" controls preload="metadata">
+			<source src="https://14n6q1yr33.sse.codesandbox.io/video" type="video/mp4">
+		</video>
+		<div id="progressBar"></div>
+	</div>
+	<div id="counter"></div>
+	<button id="play">play/pause</button>
+	<button id="stop">stop</button>
+</body>
+
+<script>
+	const video = document.getElementById('videoPlayer');
+	const counter = document.getElementById('counter');
+	const play = document.getElementById('play');
+	const stop = document.getElementById('stop');
+	const progressBar = document.getElementById('progressBar');
+	let videoDuration;
+	video.controls = false
+	counter.innerText = '0 / ???';
+	video.addEventListener('loadedmetadata', function() {
+   		videoDuration = Math.floor(video.duration);
+		counter.innerText = '0 | ' + videoDuration;
+	});
+	play.addEventListener('click', (e) => {
+		if (video.paused || video.ended) {
+			video.play();
+		} else {
+			video.pause();
+		}
+	});
+	stop.addEventListener('click', (e) => {
+		video.pause();
+		video.currentTime = 0;
+	});
+	video.addEventListener('timeupdate', () => {
+		counter.innerText = Math.floor(video.currentTime) + ' / ' + videoDuration;
+   		progressBar.style.width = Math.floor((video.currentTime / video.duration) * 100) + '%';
+	});
+</script>
+
+</html>
+
+<!-- based on https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery/cross_browser_video_player -->
